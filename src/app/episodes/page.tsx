@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEpisodes } from '../utils/api';
 import WithAuth from '../components/WithAuth';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell} from '@/app/components/ui/table';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/app/components/ui/dropdown-menu'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/app/components/ui/table';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/app/components/ui/dropdown-menu';
 import { Button } from '@/app/components/ui/button';
 import Modal from '../components/Modal';
 
@@ -14,8 +14,7 @@ import { Episode } from '../utils/types';
 
 const EpisodesPage = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [filterName, setFilterName] = useState<string>('');
-  const [filterEpisode, setFilterEpisode] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedEpisode, setSelectedEpisode] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<'edit' | 'status'>('edit');
@@ -59,8 +58,8 @@ const EpisodesPage = () => {
   };
 
   const filteredEpisodes = episodes.filter((episode) =>
-    episode?.name?.toLowerCase().includes(filterName.toLowerCase()) &&
-    episode?.episode?.toLowerCase().includes(filterEpisode.toLowerCase())
+    episode?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    episode?.episode?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -73,17 +72,9 @@ const EpisodesPage = () => {
           <div className="mb-4 grid grid-cols-1 gap-2">
             <input
               type="text"
-              name="name"
-              placeholder="Buscar por nombre"
-              onChange={(e) => setFilterName(e.target.value)}
-              className="p-2 border rounded w-full"
-            />
-            <input
-              type="text"
-              name="episode"
-              placeholder="Buscar por episodio"
-              onChange={(e) => setFilterEpisode(e.target.value)}
-              className="p-2 border rounded w-full"
+              placeholder="Buscar por nombre o episodio"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 border rounded w-full md:w-80" // Cambia el tamaño aquí
             />
             <Table>
               <TableHeader>
