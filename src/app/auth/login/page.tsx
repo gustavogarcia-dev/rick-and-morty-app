@@ -1,14 +1,13 @@
 'use client'
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import Link from "next/link";
+import { useToast } from "@/app/components/ui/use-toast";
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  // const [loading, setLoading] = useState<boolean>(false);
+  const {toast} = useToast()
 
   const signInValidationSchema = Yup.object().shape({
     email: Yup.string()
@@ -34,7 +33,11 @@ const Login: React.FC = () => {
       localStorage.setItem('token', token);
       router.push('/'); // Redirige a la página principal
     } else {
-      setErrorMessage('Email o contraseña incorrectos');
+      toast({
+        title: "Email o contraseña incorrectos",
+        description: "Registrese o intente con otra cuenta",
+        variant:  "destructive", 
+      });
     }
 
     // setLoading(false);
@@ -57,7 +60,7 @@ const Login: React.FC = () => {
           validationSchema={signInValidationSchema}
           onSubmit={submitSignInForm}
         >
-          {({ errors,touched, values }) => (
+          {({ errors,touched }) => (
             <Form id="signin-form" method="post">
               <label
                 htmlFor="email"
@@ -89,7 +92,6 @@ const Login: React.FC = () => {
               {errors.password && touched.password ? <div className='text-red-800'>{errors.password}</div> : null}
 
                 <button type="submit"  className="w-full bg-blue-500 text-white p-2 rounded" >Iniciar sesion</button>
-              <div className="error-message my-2">{errorMessage}</div>
             </Form>
           )}
         </Formik>

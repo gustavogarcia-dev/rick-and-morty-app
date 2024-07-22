@@ -1,13 +1,15 @@
 'use client'
 import Link from 'next/link';
 import { Formik, Form, Field } from 'formik';
-import { useState } from 'react';
 import * as Yup from 'yup'
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/app/components/ui/use-toast';
+// import { Toaster } from '@/app/components/ui/toaster';
+
 
 const RegisterPage = () => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const { toast } = useToast()
 
   const SignupSchema = Yup.object().shape({
     Name: Yup.string()
@@ -29,16 +31,20 @@ const RegisterPage = () => {
     const userExists = users.some((user: { email: string }) => user.email === values.email);
     
     if (userExists) {
-      setErrorMessage('El correo electronico ya está registrado');
+      toast({
+        title: "El correo electronico ya esta registrado",
+        description: "intente con otro",
+        variant:  "destructive", 
+      });
       return;
     }
     // Añadimos el nuevo usuario
     users.push(values);
     // Guardamos los usuarios actualizados en el localStorage
     localStorage.setItem('users', JSON.stringify(users));
-    console.log('User registered:', values);
-    alert("usuario registrado exitosamente")
-    setErrorMessage(null)
+    toast({
+      title:"Usuario Registrado correctamente"
+    })
     router.push('/auth/login')
     
   };
@@ -50,7 +56,6 @@ const RegisterPage = () => {
           <div className="py-4 text-base font-normal text-gray-500">
             Comencemos con su nueva cuenta.
           </div>
-          <div className="error-message text-xl font-bold text-yellow-500 my-2">{errorMessage}</div>
             <Formik
               initialValues={{
                 Name: '',
@@ -100,7 +105,7 @@ const RegisterPage = () => {
               </Link>
         </div>
       </div>
-        
+        {/* <Toaster /> */}
     </div>
     </>
   );
