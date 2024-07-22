@@ -34,8 +34,9 @@ const CreateCharacterPage: React.FC = () => {
       title: `el Personaje ${newCharacter.name} ha sido Creado Correctamente`,
       
     })
-    router.push('/characters'); // Redirige a la página de personajes
     localStorage.setItem('characters', JSON.stringify([...characters, newCharacter]));
+
+    router.push('/characters'); // Redirige a la página de personajes
   };
 
   return (
