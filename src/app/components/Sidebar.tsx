@@ -7,6 +7,9 @@ const Sidebar: React.FC = () => {
     <aside className="w-auto bg-gray-800 text-white flex flex-col p-4 relative h-full md:fixed md:left-auto  md:w-auto ">
       <nav className="flex-1 mt-20">
         <ul>
+        <li className="py-2">
+            <Link href="/" className="hover:text-green-400">Home</Link>
+          </li>
           <li className="py-2">
             <Link href="/create-character" className="hover:text-green-400">Crear Personaje</Link>
           </li>
