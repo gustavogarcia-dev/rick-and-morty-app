@@ -10,6 +10,7 @@ import withAuth from '../components/WithAuth';
 import Modal from '../components/Modal';
 import { fetchAndStoreCharacters, fetchAndStoreCharacterOptions } from '../utils/api';
 import { Character, CharacterOptions, Filters } from '../utils/types';
+import { getLocalStorageCharacterOptions, getLocalStorageCharacters } from '../utils/api';
 
 const CharactersPage: React.FC = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -72,13 +73,7 @@ const CharactersPage: React.FC = () => {
     setModalType(null);
   };
 
-  const getLocalStorageCharacters = (): Character[] => {
-    return JSON.parse(localStorage.getItem('characters') || '[]');
-  };
 
-  const getLocalStorageCharacterOptions = () => {
-    return JSON.parse(localStorage.getItem('characterOptions') || 'null');
-  };
 
   const filterCharacters = (filters: Filters) => {
     const allCharacters = getLocalStorageCharacters();
@@ -204,32 +199,46 @@ const CharactersPage: React.FC = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Especie</label>
-                <input
-                  type="text"
-                  value={selectedCharacter?.species || ''}
+                <select 
+                  name="specie"
                   onChange={(e) => setSelectedCharacter({ ...selectedCharacter!, species: e.target.value })}
                   className="mt-1 p-2 border rounded w-full"
                   required
-                />
+                >
+                <option value="">Seleccione la especie</option>
+                {options.species.map((especie) => 
+                  <option key={especie} value={especie}>{especie}</option>
+
+                )}
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Tipo</label>
-                <input
-                  type="text"
-                  value={selectedCharacter?.type || ''}
+                <select
+                  name="type"
                   onChange={(e) => setSelectedCharacter({ ...selectedCharacter!, type: e.target.value })}
                   className="mt-1 p-2 border rounded w-full"
-                />
+                >
+                <option value="">Selecciona el tipo</option>
+                {options.types.map(type => (
+                  <option key={type} value={type} >{type}</option>
+                ))}
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Género</label>
-                <input
-                  type="text"
+                <select
+                  name='gender'
                   value={selectedCharacter?.gender || ''}
                   onChange={(e) => setSelectedCharacter({ ...selectedCharacter!, gender: e.target.value })}
                   className="mt-1 p-2 border rounded w-full"
                   required
-                />
+                >
+                <option value="">Selecciona el Genero</option>
+                {options.genders.map(gender => (
+                  <option key={gender} value={gender} >{gender}</option>
+                ))}
+                </select>
               </div>
               <Button type="submit">Guardar</Button>
             </form>
@@ -237,13 +246,18 @@ const CharactersPage: React.FC = () => {
             <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Estatus</label>
-                <input
-                  type="text"
+                <select
+                  name='status'
                   value={selectedCharacter?.status || ''}
                   onChange={(e) => setSelectedCharacter({ ...selectedCharacter!, status: e.target.value })}
                   className="mt-1 p-2 border rounded w-full"
                   required
-                />
+                >
+                <option value="">selecciona el status</option>
+                <option value="alive">Alive</option>
+                <option value="death">Death</option>
+
+                </select>
               </div>
               <Button type="submit">Guardar</Button>
             </form>

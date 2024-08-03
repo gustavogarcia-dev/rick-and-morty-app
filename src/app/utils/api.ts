@@ -72,3 +72,12 @@ export const fetchEpisodes = async (): Promise<Episode[] | null> => {
     return null; // o lanzar el error para ser manejado en el componente
   }
 };
+
+
+export const getLocalStorageCharacters = (): Character[] => {
+  return JSON.parse(localStorage.getItem('characters') || '[]');
+};
+
+export const getLocalStorageCharacterOptions = () => {
+  return JSON.parse(localStorage.getItem('characterOptions') || 'null');
+};

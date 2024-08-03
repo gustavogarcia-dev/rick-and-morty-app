@@ -9,9 +9,17 @@ import withAuth from '../components/WithAuth';
 import { useToast } from '../components/ui/use-toast';
 import { fetchAndStoreCharacters } from '../utils/api';
 import charterDefaultImage from '/images/charterDefaultImage.jpeg';
+import { CharacterOptions } from '../utils/types';
+import { useEffect } from 'react';
+import { getLocalStorageCharacterOptions, fetchAndStoreCharacterOptions } from '../utils/api';
+
+
+
 
 const CreateCharacterPage: React.FC = () => {
   const [character, setCharacter] = useState<Character>({id:'', name:'', species:'', type:'', gender:'', image:'/images/charterDefaultImage.jpeg'});
+  const [options, setOptions] = useState<CharacterOptions>({ species: [], types: [], genders: [] });
+
   const router = useRouter();
   const {toast} = useToast();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -21,6 +29,22 @@ const CreateCharacterPage: React.FC = () => {
       [name]: value
     }));
   };
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      const storedOptions = getLocalStorageCharacterOptions();
+
+      if (!storedOptions) {
+        // Si no hay opciones almacenadas, obtener y almacenar en localStorage
+        const options = await fetchAndStoreCharacterOptions();
+        setOptions(options);
+      } else {
+        setOptions(storedOptions);
+      }
+    };
+
+    loadOptions();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,19 +93,25 @@ const CreateCharacterPage: React.FC = () => {
                   required
                 >
                   <option value="">Seleccionar Especie</option>
-                  <option value="human">Humano</option>
-                  <option value="alien">Alien</option>
+                  {options.species.map(specie => 
+                    <option key={specie} value={specie}>{specie}</option>
+                  )}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tipo</label>
-                <input
-                  type="text"
+                <select
+                  
                   name="type"
                   value={character.type}
                   onChange={handleChange}
                   className="mt-1 p-2 border rounded w-full"
-                />
+                >
+                  <option value="">Seleccione el Tipo</option>
+                  {options.types.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Género</label>
@@ -93,9 +123,9 @@ const CreateCharacterPage: React.FC = () => {
                   required
                 >
                   <option value="">Seleccionar Género</option>
-                  <option value="male">Masculino</option>
-                  <option value="female">Femenino</option>
-                  <option value="unknown">Desconocido</option>
+                  {options.genders.map(gender => 
+                    <option key={gender} value={gender}>{gender}</option>
+                  )}
                 </select>
               </div>
               <Button type="submit" className="w-full">Guardar</Button>
